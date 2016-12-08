@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/cate1"
+            android:title="@string/show_all" />
+        <item
+            android:id="@+id/cate2"
+            android:title="@string/academic" />
+        <item
+            android:id="@+id/cate3"
+            android:title="@string/lifestyle" />
+        <item
+            android:id="@+id/cate4"
+            android:title="@string/activity" />
+        <item
+            android:id="@+id/cate5"
+            android:title="@string/relationship" />
+        <item
+            android:id="@+id/cate6"
+            android:title="@string/sports" />
+        <item
+            android:id="@+id/cate7"
+            android:title="@string/news" />
+        <item
+            android:id="@+id/cate8"
+            android:title="@string/games" />
+        <item
+            android:id="@+id/cate9"
+            android:title="@string/hobby" />
+        <item
+            android:id="@+id/cate10"
+            android:title="@string/others" />
+
+    </group>
+</menu>

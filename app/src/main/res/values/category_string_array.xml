@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="category">
+    <item>@string/show_all</item>
+    <item>@string/academic</item>
+    <item>@string/lifestyle</item>
+    <item>@string/activity</item>
+    <item>@string/relationship</item>
+    <item>@string/sports</item>
+    <item>@string/news</item>
+    <item>@string/games</item>
+    <item>@string/hobby</item>
+    <item>@string/others</item>
+</string-array>
+</resources>
