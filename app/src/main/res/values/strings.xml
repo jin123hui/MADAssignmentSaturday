@@ -137,4 +137,15 @@
     <string name="student_id">Student ID</string>
     <string name="telephone_no">Telephone No</string>
     <string name="reply">Reply</string>
+
+    <string name="insert_answer_url">http://xoulzeater.esy.es/assignment/insert_answer.php</string>
+    <string name="insert_favourite_url">http://xoulzeater.esy.es/assignment/insert_favourite.php</string>
+    <string name="insert_question_url">http://xoulzeater.esy.es/assignment/insert_question.php</string>
+    <string name="insert_student_url">http://xoulzeater.esy.es/assignment/insert_student.php</string>
+    <string name="select_answer_url">http://xoulzeater.esy.es/assignment/select_answer.php</string>
+    <string name="select_favourite_url">http://xoulzeater.esy.es/assignment/select_favourite.php</string>
+    <string name="select_question_url">http://xoulzeater.esy.es/assignment/select_question.php</string>
+    <string name="select_student_url">http://xoulzeater.esy.es/assignment/select_student.php</string>
+    <string name="update_question_url">http://xoulzeater.esy.es/assignment/update_question.php</string>
+    <string name="update_student_url">http://xoulzeater.esy.es/assignment/update_student.php</string>
 </resources>
