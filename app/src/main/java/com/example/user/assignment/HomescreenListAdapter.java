@@ -32,9 +32,11 @@ public class HomescreenListAdapter extends ArrayAdapter {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_entry_layout, parent, false);
             TextView textView1 = (TextView) convertView.findViewById(R.id.post_subject);
             TextView textView2 = (TextView) convertView.findViewById(R.id.post_category);
+            TextView textView3 = (TextView) convertView.findViewById(R.id.num_ans);
             textView1.setText(question.getSubject());
-            textView2.setText(question.getCategory());
+            textView2.setText(question.getCategory().toUpperCase());
             //viewHolder = new ViewHolderPost(textView);
+            textView3.setText(countAns(question.getId()) + " ANS");
             convertView.setTag(viewHolder);
 
         } else {
@@ -44,5 +46,12 @@ public class HomescreenListAdapter extends ArrayAdapter {
         //viewHolder.getText().setText(listViewItem.getQuestionSubject());
 
         return convertView;
+    }
+
+    public int countAns(int id) {
+        int numAns = 0;
+
+
+        return numAns;
     }
 }

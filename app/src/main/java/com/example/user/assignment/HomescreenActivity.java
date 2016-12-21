@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -41,11 +42,12 @@ import java.util.Date;
 import java.util.List;
 
 public class HomescreenActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
     ListView questList;
     List<Question> questionList;
     private ProgressDialog pDialog;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,7 @@ public class HomescreenActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        //.setAction("Action", null).show();
+                //.setAction("Action", null).show();
                 Intent intent = new Intent(view.getContext(), NewQuestionActivity.class);
                 startActivity(intent);
             }
@@ -81,28 +83,29 @@ public class HomescreenActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeRefreshLayout.setRefreshing(true);
+                                        readQuestion();
+                                    }
+                                }
+
+        );
+
+
         ListView listView = (ListView) findViewById(R.id.list);
-        /*final ListViewItemPost[] items = new ListViewItemPost[10];
-        items[0] = new ListViewItemPost("Activity","What cocuriculum should I join?");
-        items[1] = new ListViewItemPost("Others", "When is the Chinese New Year Holiday?");
-        items[2] = new ListViewItemPost("Relationship","Why am I still single? 11.11?");
-        items[3] = new ListViewItemPost("Lifestyle", "How to make chicken sandwich?");
-        items[4] = new ListViewItemPost("Activity","What cocuriculum should I join?");
-        items[5] = new ListViewItemPost("Activity","What cocuriculum should I join?");
-        items[6] = new ListViewItemPost("Activity","What cocuriculum should I join?");
-        items[7] = new ListViewItemPost("Activity","What cocuriculum should I join?");
-        items[8] = new ListViewItemPost("Activity","What cocuriculum should I join?");
-        items[9] = new ListViewItemPost("Activity","What cocuriculum should I join?");
-        HomescreenListAdapter customAdapter = new HomescreenListAdapter(this, R.id.post_subject, items);
-        listView.setAdapter(customAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), items[i].getQuestionSubject(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), questionList.get(i).getSubject(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(view.getContext(), DiscussionActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });
 
 
     }
@@ -136,7 +139,7 @@ public class HomescreenActivity extends AppCompatActivity
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
             return true;
-        } else if(id == R.id.action_myinfo) {
+        } else if (id == R.id.action_myinfo) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
             return true;
@@ -150,7 +153,6 @@ public class HomescreenActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -173,6 +175,7 @@ public class HomescreenActivity extends AppCompatActivity
             if (isConnected) {
                 //new downloadCourse().execute(getResources().getString(R.string.get_course_url));
                 downloadQuestion(this, getString(R.string.select_question_url));
+                countAns(this, getString(R.string.count_answer));
             } else {
                 Toast.makeText(getApplication(), "Network is NOT available",
                         Toast.LENGTH_LONG).show();
@@ -186,17 +189,18 @@ public class HomescreenActivity extends AppCompatActivity
 
     private void downloadQuestion(Context context, String url) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        if (!pDialog.isShowing())
+        /*if (!pDialog.isShowing())
             pDialog.setMessage("Syn with server...");
-        pDialog.show();
+        pDialog.show();*/
+        swipeRefreshLayout.setRefreshing(true);
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        try{
+                        try {
                             questionList.clear();
-                            for(int i=0; i < response.length();i++){
+                            for (int i = 0; i < response.length(); i++) {
                                 JSONObject questResponse = (JSONObject) response.get(i);
                                 int id = questResponse.getInt("id");
                                 String subject = questResponse.getString("subject");
@@ -212,12 +216,15 @@ public class HomescreenActivity extends AppCompatActivity
                                 question.setCategory(category);
                                 question.setPostedTime(postedTime);
                                 question.setStudId(studId);
+
                                 questionList.add(question);
                             }
+
                             loadQuestion();
-                            if (pDialog.isShowing())
-                                pDialog.dismiss();
-                        }catch (Exception e){
+                            /*if (pDialog.isShowing())
+                                pDialog.dismiss();*/
+                            swipeRefreshLayout.setRefreshing(false);
+                        } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -226,8 +233,38 @@ public class HomescreenActivity extends AppCompatActivity
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         Toast.makeText(getApplicationContext(), "Error:" + volleyError.getMessage(), Toast.LENGTH_LONG).show();
-                        if (pDialog.isShowing())
-                            pDialog.dismiss();
+                        /*if (pDialog.isShowing())
+                            pDialog.dismiss();*/
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+        queue.add(jsonObjectRequest);
+    }
+
+    private void countAns(Context context, String url) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject questResponse = (JSONObject) response.get(i);
+                                int num = questResponse.getInt("num_answer");
+
+
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Toast.makeText(getApplicationContext(), "Error:" + volleyError.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
         queue.add(jsonObjectRequest);
@@ -237,5 +274,10 @@ public class HomescreenActivity extends AppCompatActivity
         final HomescreenListAdapter adapter = new HomescreenListAdapter(this, R.layout.content_homescreen, questionList);
         questList.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), "Count :" + questionList.size(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRefresh() {
+        readQuestion();
     }
 }

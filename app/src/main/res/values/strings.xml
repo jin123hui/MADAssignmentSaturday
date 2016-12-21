@@ -138,6 +138,10 @@
     <string name="telephone_no">Telephone No</string>
     <string name="reply">Reply</string>
 
+    <string name="dialog_title_guest">Proceed Guest</string>
+    <string name="dialog_loginGuest">Login as guest</string>
+    <string name="dialog_cancel">Cancel</string>
+
     <string name="insert_answer_url">http://xoulzeater.esy.es/assignment/insert_answer.php</string>
     <string name="insert_favourite_url">http://xoulzeater.esy.es/assignment/insert_favourite.php</string>
     <string name="insert_question_url">http://xoulzeater.esy.es/assignment/insert_question.php</string>
@@ -148,4 +152,6 @@
     <string name="select_student_url">http://xoulzeater.esy.es/assignment/select_student.php</string>
     <string name="update_question_url">http://xoulzeater.esy.es/assignment/update_question.php</string>
     <string name="update_student_url">http://xoulzeater.esy.es/assignment/update_student.php</string>
+    <string name="validate_student">http://xoulzeater.esy.es/assignment/validate_student.php</string>
+    <string name="count_answer">http://xoulzeater.esy.es/assignment/count_answer.php</string>
 </resources>

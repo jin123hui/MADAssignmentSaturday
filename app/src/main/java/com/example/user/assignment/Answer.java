@@ -25,7 +25,7 @@ public class Answer {
         this.content = content;
         this.up = up;
         this.down = down;
-        this.date = date;
+        this.setDate(date);
         this.studId = studId;
 
     }
@@ -85,4 +85,7 @@ public class Answer {
     }
 
 
+    public Date getDate() {
+        return date;
+    }
 }

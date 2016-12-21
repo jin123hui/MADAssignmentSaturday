@@ -5,6 +5,10 @@
 
     <TextView
         android:text=""
+        android:textColor="@color/colorButtonDarkBlue"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:textStyle="italic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/post_category" />
@@ -16,6 +20,11 @@
 
     <TextView
         android:text=""
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
@@ -44,11 +53,11 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                android:text="3 ANS"
+                android:text=""
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:id="@+id/no_of_answer" />
+                android:id="@+id/num_ans" />
 
                 <TextView
                     android:text="15m"
