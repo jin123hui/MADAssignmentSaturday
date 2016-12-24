@@ -149,9 +149,11 @@
     <string name="select_answer_url">http://xoulzeater.esy.es/assignment/select_answer.php</string>
     <string name="select_favourite_url">http://xoulzeater.esy.es/assignment/select_favourite.php</string>
     <string name="select_question_url">http://xoulzeater.esy.es/assignment/select_question.php</string>
+    <string name="select_one_question_url">http://xoulzeater.esy.es/assignment/select_one_question.php</string>
     <string name="select_student_url">http://xoulzeater.esy.es/assignment/select_student.php</string>
     <string name="update_question_url">http://xoulzeater.esy.es/assignment/update_question.php</string>
     <string name="update_student_url">http://xoulzeater.esy.es/assignment/update_student.php</string>
     <string name="validate_student">http://xoulzeater.esy.es/assignment/validate_student.php</string>
     <string name="count_answer">http://xoulzeater.esy.es/assignment/count_answer.php</string>
+    <string name="answer2">ANSWER</string>
 </resources>

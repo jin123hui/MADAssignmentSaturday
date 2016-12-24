@@ -38,35 +38,10 @@
             android:textStyle="bold"
             android:textSize="18dp"
             android:id="@+id/change_password_button"
-            android:onClick="showSnakebar"/>
+            android:onClick=""/>
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <TextView
-            android:text="@string/deactivate_account"
-            android:layout_width="0dp"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView6"
-            android:layout_weight="1" />
-
-        <Button
-            android:text="@string/deactivate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:textColor="@color/colorButtonDarkBlue"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            android:id="@+id/deactivate_acc_button"
-            android:onClick="showSnakebar1"/>
-
-    </LinearLayout>
 
         <TextView
             android:text="@string/about_us"
@@ -102,7 +77,8 @@
             android:textSize="25dp"
             android:background="@color/colorButtonBlue"
             android:textColor="@android:color/white"
-            android:id="@+id/logout_button" />
+            android:id="@+id/logout_button"
+            android:onClick="logout"/>
 
     </LinearLayout>
 </RelativeLayout>

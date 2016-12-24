@@ -28,24 +28,30 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:id="@+id/post_subject" />
+        android:id="@+id/post_subject"
+        android:maxLength="65"/>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="2dp">
 
             <Button
                 android:text="@string/answer"
                 android:textAllCaps="false"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
                 android:id="@+id/answer"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:clickable="false"/>
+                android:clickable="false"
+                android:background="@color/answerbutton"
+                android:textColor="@color/colorButtonDarkBlue"
+                />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -54,17 +60,18 @@
 
                 <TextView
                 android:text=""
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/num_ans" />
 
                 <TextView
-                    android:text="15m"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:text=""
+                    android:layout_width="wrap_content"
+
                     android:layout_height="wrap_content"
-                    android:id="@+id/time_posted" />
+                    android:id="@+id/time_posted"
+                    android:textAlignment="textEnd"/>
 
 
                 </LinearLayout>

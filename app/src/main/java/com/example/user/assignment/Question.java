@@ -12,22 +12,24 @@ public class Question {
     private String subject;
     private String content;
     private String category;
-    private String postedTime;
+    private Date postedTime;
     private String studId;
-    private int numAns;
+    private String studName;
+    private String numAns;
 
     public Question() {
-        this(1, "", "", "", new Date().toString(), "", 1);
+        this(1, "", "", "", new Date(), "", "", "");
     }
 
     public Question(int id, String subject, String content,
-                    String category, String postedTime, String studId, int numAns) {
+                    String category, Date postedTime, String studId, String studName, String numAns) {
         this.id = id;
         this.subject = subject;
         this.content = content;
         this.category = category;
         this.postedTime = postedTime;
         this.studId = studId;
+        this.studName = studName;
         this.setNumAns(numAns);
     }
 
@@ -49,7 +51,7 @@ public class Question {
         this.category = category;
     }
 
-    public void setPostedTime(String postedTime) {
+    public void setPostedTime(Date postedTime) {
         this.postedTime = postedTime;
     }
 
@@ -73,7 +75,7 @@ public class Question {
         return category;
     }
 
-    public String getPostedTime() {
+    public Date getPostedTime() {
         return postedTime;
     }
 
@@ -81,12 +83,20 @@ public class Question {
         return studId;
     }
 
-    public int getNumAns() {
+    public String getNumAns() {
         return numAns;
     }
 
-    public void setNumAns(int numAns) {
+    public void setNumAns(String numAns) {
         this.numAns = numAns;
+    }
+
+    public String getStudName() {
+        return studName;
+    }
+
+    public void setStudName(String studName) {
+        this.studName = studName;
     }
 }
 

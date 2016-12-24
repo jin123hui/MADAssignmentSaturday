@@ -6,4 +6,5 @@
     <color name="colorButtonBlue">#41e7ff</color>
     <color name="colorButtonDarkBlue">#203A93</color>
     <color name="search">#e5e9ea</color>
+    <color name="answerbutton">#C1ECFA</color>
 </resources>

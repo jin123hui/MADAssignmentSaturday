@@ -5,10 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -46,6 +49,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.user.assignment.domain.SessionManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final String USERNAME = "username";
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -82,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private ProgressDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,7 +176,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
         if (mAuthTask != null) {
+
             return;
+
         }
 
         // Reset errors.
@@ -186,6 +194,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -193,10 +202,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
+
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
         } else if (!isEmailValid(email)) {
+
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -205,11 +216,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+
             focusView.requestFocus();
+            //pDialog.dismiss();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLoginTask(email, password, this);
+
+            pDialog = ProgressDialog.show(LoginActivity.this, "", "Signing in...");
+            mAuthTask = new UserLoginTask(email.toLowerCase(), password, this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -345,16 +360,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         startActivity(intent);
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
+    private void checkConn() {
+        try {
+            // Check availability of network connection.
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            Boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+            if (isConnected) {
+                attemptLogin();
+            } else {
+                Toast.makeText(getApplication(), "Network is NOT available",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getApplication(),
+                    "Error reading record:" + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
         private Context c;
         private boolean valid = false;
+        private Student studentL;
 
         UserLoginTask(String email, String password, Context c) {
             mEmail = email;
@@ -388,13 +419,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                             String name = courseResponse.getString("name");
                                             String password = courseResponse.getString("password");
                                             String email = courseResponse.getString("email");
-                                            //String telNo = courseResponse.getString("telno");
+                                            String telNo = courseResponse.getString("telno");
                                             Student student = new Student();
                                             student.setStudId(studId);
                                             student.setName(name);
                                             student.setPassword(password);
                                             student.setEmail(email);
-                                            //student.setTelNo(telNo);
+                                            student.setTelNo(telNo);
+                                            studentL = student;
                                             valid = true;
                                         }
                                     }
@@ -445,17 +477,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return valid;
         }
 
-        @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
 
+
             if (success) {
-                Intent myIntent = new Intent(LoginActivity.this,HomescreenActivity.class);
-                LoginActivity.this.startActivity(myIntent);
+                Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT).show();
+                SessionManager sess = new SessionManager(c);
+                sess.createLoginSession(mEmail, mPassword, studentL.getName(), studentL.getStudId());
+                Intent intent = new Intent(c, HomescreenActivity.class);
+                pDialog.dismiss();
+                startActivity(intent);
+
             } else {
+
+                mEmailView.setError("");
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
+                pDialog.dismiss();
             }
         }
 

@@ -52,9 +52,14 @@
         <activity
             android:name=".DiscussionActivity"
             android:parentActivityName=".HomescreenActivity" />
+
         <activity android:name=".ReplyActivity"
             android:label="Reply"
-            android:parentActivityName=".DiscussionActivity"/>
+            android:parentActivityName=".DiscussionActivity" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".DiscussionActivity" />
+    </activity>
     </application>
 
 </manifest>

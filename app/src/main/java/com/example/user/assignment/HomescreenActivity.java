@@ -23,23 +23,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class HomescreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
@@ -48,6 +57,9 @@ public class HomescreenActivity extends AppCompatActivity
     List<Question> questionList;
     private ProgressDialog pDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
+    boolean flag_loading = false;
+    String numAns;
+    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +78,7 @@ public class HomescreenActivity extends AppCompatActivity
                 //.setAction("Action", null).show();
                 Intent intent = new Intent(view.getContext(), NewQuestionActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -101,12 +114,33 @@ public class HomescreenActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), questionList.get(i).getSubject(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), questionList.get(i).getSubject(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(view.getContext(), DiscussionActivity.class);
+                intent.putExtra("QUESTION", questionList.get(i).getId());
                 startActivity(intent);
             }
         });
 
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
+                {
+                    if(flag_loading == false)
+                    {
+                        flag_loading = true;
+                        //additems();
+                    }
+                }
+            }
+        });
 
     }
 
@@ -175,7 +209,7 @@ public class HomescreenActivity extends AppCompatActivity
             if (isConnected) {
                 //new downloadCourse().execute(getResources().getString(R.string.get_course_url));
                 downloadQuestion(this, getString(R.string.select_question_url));
-                countAns(this, getString(R.string.count_answer));
+
             } else {
                 Toast.makeText(getApplication(), "Network is NOT available",
                         Toast.LENGTH_LONG).show();
@@ -187,11 +221,8 @@ public class HomescreenActivity extends AppCompatActivity
         }
     }
 
-    private void downloadQuestion(Context context, String url) {
+    private void downloadQuestion(final Context context, String url) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        /*if (!pDialog.isShowing())
-            pDialog.setMessage("Syn with server...");
-        pDialog.show();*/
         swipeRefreshLayout.setRefreshing(true);
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
@@ -208,21 +239,30 @@ public class HomescreenActivity extends AppCompatActivity
                                 String category = questResponse.getString("category");
                                 String postedTime = questResponse.getString("postedTime");
                                 String studId = questResponse.getString("studId");
+                                String nums = questResponse.getString("counts");
+
+                                Date d = new Date();
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                try {
+                                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                    d = sdf.parse(postedTime);
+                                } catch (ParseException ex) {
+                                    Toast.makeText(getApplicationContext(), "Date error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                                }
 
                                 Question question = new Question();
                                 question.setId(id);
                                 question.setSubject(subject);
                                 question.setContent(content);
                                 question.setCategory(category);
-                                question.setPostedTime(postedTime);
+                                question.setPostedTime(d);
                                 question.setStudId(studId);
+                                question.setNumAns(nums);
 
                                 questionList.add(question);
                             }
 
                             loadQuestion();
-                            /*if (pDialog.isShowing())
-                                pDialog.dismiss();*/
                             swipeRefreshLayout.setRefreshing(false);
                         } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -233,47 +273,59 @@ public class HomescreenActivity extends AppCompatActivity
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         Toast.makeText(getApplicationContext(), "Error:" + volleyError.getMessage(), Toast.LENGTH_LONG).show();
-                        /*if (pDialog.isShowing())
-                            pDialog.dismiss();*/
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
         queue.add(jsonObjectRequest);
     }
 
-    private void countAns(Context context, String url) {
+    /*private String countAns(Context context, String url, final int id) {
         RequestQueue queue = Volley.newRequestQueue(context);
-
-        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
-                new Response.Listener<JSONArray>() {
+        this.id = id;
+        StringRequest postRequest = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(String response) {
                         try {
+                            //int object = Integer.parseInt(response);
+                            //JSONObject object = new JSONObject(response);
+                            numAns = response.toString();
 
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject questResponse = (JSONObject) response.get(i);
-                                int num = questResponse.getInt("num_answer");
-
-
-                            }
                         } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "BLABLA: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplicationContext(), "Error:" + volleyError.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Error: " + volleyError.getMessage(), Toast.LENGTH_LONG).show();
+
+                        swipeRefreshLayout.setRefreshing(false);
                     }
-                });
-        queue.add(jsonObjectRequest);
-    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("quesId", id+"");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return super.getHeaders();
+            }
+        };
+        queue.add(postRequest);
+        return numAns;
+    }*/
 
     private void loadQuestion() {
         final HomescreenListAdapter adapter = new HomescreenListAdapter(this, R.layout.content_homescreen, questionList);
         questList.setAdapter(adapter);
-        Toast.makeText(getApplicationContext(), "Count :" + questionList.size(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "Count :" + questionList.size(), Toast.LENGTH_LONG).show();
     }
 
     @Override

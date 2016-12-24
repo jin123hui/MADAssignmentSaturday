@@ -143,7 +143,8 @@
             android:background="@drawable/buttonshape"
             android:textColor="@android:color/white"
             android:textSize="30dp"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false"
+            android:onClick="signUp"/>
 
         <Button
             android:text="@string/cancel"
@@ -153,6 +154,7 @@
             android:background="@drawable/buttonshape"
             android:textColor="@android:color/white"
             android:textSize="30dp"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false"
+            android:onClick="goBack"/>
     </LinearLayout>
 </RelativeLayout>

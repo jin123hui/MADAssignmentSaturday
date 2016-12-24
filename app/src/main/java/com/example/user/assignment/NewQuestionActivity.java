@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.user.assignment.domain.SessionManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +68,7 @@ public class NewQuestionActivity extends AppCompatActivity implements AdapterVie
         question.setCategory(category);
         question.setSubject(questionSubject.getText().toString());
         question.setContent(questionContent.getText().toString());
+        question.setStudId(new SessionManager(this).getUserDetails().get("id"));
 
         try {
             String url = getApplicationContext().getString(R.string.insert_question_url);
@@ -90,7 +92,7 @@ public class NewQuestionActivity extends AppCompatActivity implements AdapterVie
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Toast.makeText(getApplicationContext(), "Record saved. " + response, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Posted new question! ", Toast.LENGTH_LONG).show();
                             finish();
                         }
                     },
@@ -103,11 +105,11 @@ public class NewQuestionActivity extends AppCompatActivity implements AdapterVie
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put("id", question.getStudId());
+                    //params.put("id", question.getStudId());
                     params.put("subject", question.getSubject());
                     params.put("content", question.getContent());
                     params.put("category", question.getCategory());
-                    params.put("postedTime", question.getPostedTime());
+                    //params.put("postedTime", question.getPostedTime());
                     params.put("studId", question.getStudId());
                     return params;
                 }

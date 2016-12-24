@@ -15,11 +15,13 @@ public class Answer {
     private int down;
     private Date date;
     private String studId;
+    private String studName;
 
     public Answer() {
+        this(0, 0, "", 0, 0, new Date(), "", "");
     }
 
-    public Answer(int id, int quesId, String content, int up, int down, Date date, String studId) {
+    public Answer(int id, int quesId, String content, int up, int down, Date date, String studId, String studName) {
         this.id = id;
         this.quesId = quesId;
         this.content = content;
@@ -27,7 +29,7 @@ public class Answer {
         this.down = down;
         this.setDate(date);
         this.studId = studId;
-
+        this.studName = studName;
     }
 
     public void setId(int id) {
@@ -87,5 +89,13 @@ public class Answer {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getStudName() {
+        return studName;
+    }
+
+    public void setStudName(String studName) {
+        this.studName = studName;
     }
 }

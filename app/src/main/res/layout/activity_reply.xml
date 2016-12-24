@@ -36,7 +36,8 @@
             android:textAllCaps="false"
             android:textSize="25dp"
             android:background="@color/colorButtonBlue"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            android:onClick="createAnswer"/>
     </LinearLayout>
 
 </RelativeLayout>
